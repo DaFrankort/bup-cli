@@ -20,6 +20,10 @@ def add_path(relative_path):
         json.dump(paths, file, indent=4)
     print(f"Added path: '{abs_path}'")
 
+def write(data):
+    with open(_file_path(), 'w') as file:
+        json.dump(data, file, indent=4)
+
 def read():
     try:
         with open(_file_path(), 'r') as file:

@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import sys
-from .commands import add, list
+from .commands import add_path
+from .commands import list_paths
+from .commands import del_path
+
 
 def main():
     args = sys.argv[1:]
@@ -9,8 +12,10 @@ def main():
         print('No arguments given.')
         return
 
-    add.check_and_run(args)
-    list.check_and_run(args)
+    # TODO MAKE SWITCH CASE
+    add_path.check_and_run(args)
+    list_paths.check_and_run(args)
+    del_path.check_and_run(args)
 
 if __name__ == '__main__':
     main()
