@@ -9,8 +9,8 @@ def main():
         print('No arguments given.')
         return
 
-    add.check(args)
-    list.check(args)
+    add.check_and_run(args)
+    list.check_and_run(args)
 
 if __name__ == '__main__':
     main()

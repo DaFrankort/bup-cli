@@ -1,7 +1,7 @@
 import os
-from ..data import paths_manager as paths
+from ..managers import paths_manager as paths
 
-def check(args):
+def check_and_run(args):
     if args[0].lower() != 'add':        
         return False
 
