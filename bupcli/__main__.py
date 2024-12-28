@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 import sys
-from . import add
+from .commands import add, list
 
 def main():
     args = sys.argv[1:]
     if len(args) == 0:
-        print('no args given')
+        # TODO -> Print help command or version or something :-)
+        print('No arguments given.')
         return
 
-    for arg in args:
-        arg = format(arg)
-        print(arg)
-
     add.check(args)
+    list.check(args)
 
 if __name__ == '__main__':
     main()
