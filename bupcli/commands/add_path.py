@@ -18,5 +18,3 @@ def check_and_run(args):
 
 def _run(relative_path):
     paths.add_path(relative_path)
-
-
