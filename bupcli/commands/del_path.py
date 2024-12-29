@@ -1,5 +1,4 @@
 from ..managers import paths_manager as paths
-from . import list_paths
 
 def run(args):
     dirs = paths.read()
