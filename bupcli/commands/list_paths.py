@@ -11,7 +11,10 @@ def run():
         print("No folders configured yet, add folders using `bup add <folder_path>`")
         return
 
-    i = 0
+    if len(dirs) == 1:
+        print(f"1 folder found:")
+    else:
+        print(f"{len(dirs)} folders found:")
+
     for dir in dirs:
-        print(f"[{i}] - {dir}")
-        i += 1
+        print(f"- {dir}")
