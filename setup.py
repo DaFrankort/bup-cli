@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name = 'bup-cli',
@@ -7,5 +7,5 @@ setup(
     entry_points = {
         'console_scripts': [
             'bup = bupcli.__main__:main'
-       , ]
+        ]
     })
