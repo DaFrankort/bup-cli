@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+# __main__.py
+
 import sys
 from .commands import add_path
 from .commands import list_paths
