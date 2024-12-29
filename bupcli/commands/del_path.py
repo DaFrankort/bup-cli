@@ -12,15 +12,20 @@ def run():
         print("No folders configured yet, add folders using `bup add <folder_path>`")
         return
 
-    i = 0
-    for dir in dirs:
-        print(f"[{i}] - {dir}")
-        i += 1
+    for i, dir in enumerate(dirs):
+        print(f"[{i}] {dir}")
 
     print()
-    user_choice = int(input("Enter number for the folder to remove from the backups-list: "))
-    # TODO: Validate if selection is actually an INT
+    try:
+        user_choice = int(input("Enter number for the folder to remove from the backups-list: "))
+        if user_choice < 0 or user_choice >= len(dirs):
+            print("Invalid choice. Please select a valid folder number.")
+            return
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+        return
 
-    dirs.remove(user_choice)
+    removed_folder = dirs[user_choice]
+    del dirs[user_choice]    
     paths.write(dirs)
-    print(f"Removed folder {user_choice}: {dirs[user_choice]}.")
+    print(f"Removed folder [{user_choice}]: {removed_folder}.")
