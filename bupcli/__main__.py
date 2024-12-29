@@ -26,6 +26,7 @@ def main():
         action(args)
     else:
         print(f"Unknown command: {command}")
+        print_command_mapping()
 
 def print_command_mapping():
     global COMMAND_MAPPING
