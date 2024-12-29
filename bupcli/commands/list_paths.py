@@ -1,10 +1,6 @@
 from ..managers import paths_manager as paths
 
-def check_and_run(args):
-    if args[0].lower() == 'list':        
-        run()
-
-def run():
+def run(args):
     dirs = paths.read()
 
     if len(dirs) <= 0:

@@ -1,11 +1,7 @@
 from ..managers import paths_manager as paths
 from . import list_paths
 
-def check_and_run(args):
-    if args[0].lower() == 'del':        
-        run()
-
-def run():
+def run(args):
     dirs = paths.read()
 
     if len(dirs) <= 0:
