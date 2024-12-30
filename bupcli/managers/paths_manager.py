@@ -1,5 +1,6 @@
 import os
 import json
+from . import settings_manager as settings
 
 def _file_path():
     file_name = "dirs"
@@ -14,8 +15,14 @@ def add_path(relative_path):
     if abs_path in paths:
         print(f"Path already exists: '{abs_path}'")
         return
-    paths.append(abs_path)
 
+    backup_dir = settings.get_backup_directory()
+    if backup_dir == abs_path:
+        print(f"Can't add '{abs_path}' to the directory list, it is already set as backup-directory.")
+        print(f"If you are certain you want to back this folder up, set a different backup-directory first using `bup set <folder_path>`.")
+        return
+    
+    paths.append(abs_path)
     with open(_file_path(), 'w') as file:
         json.dump(paths, file, indent=4)
     print(f"Added path: '{abs_path}'")
