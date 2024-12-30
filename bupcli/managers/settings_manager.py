@@ -19,6 +19,13 @@ def set_backup_directory(relative_path):
         json.dump(data, file, indent=4)
     print(f"Set backup directory to: '{abs_path}'")
 
+def get_backup_directory():
+    data = read()
+    if 'backups_dir' not in data:
+        return None
+    
+    return data['backups_dir']
+
 def read():
     try:
         with open(_file_path(), 'r') as file:

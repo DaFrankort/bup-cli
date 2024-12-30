@@ -4,7 +4,7 @@ def run(args):
     dirs = paths.read()
 
     if len(dirs) <= 0:
-        print("No folders configured yet, add folders using `bup add <folder_path>`")
+        print("No directories added yet, add directories using `bup add <folder_path>`")
         return
 
     for i, dir in enumerate(dirs):
