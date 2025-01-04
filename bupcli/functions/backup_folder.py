@@ -36,7 +36,7 @@ def backup_all():
             except Exception as e:
                 print(f"Error during backup: {e}")
 
-    print("BUP completed.")
+    print("Backups completed.")
 
 def _get_optimal_workers(num_dirs):
     cpu_cores = os.cpu_count()
