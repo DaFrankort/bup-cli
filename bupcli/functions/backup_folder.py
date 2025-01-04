@@ -2,6 +2,7 @@ import shutil
 import os
 import hashlib
 import base64
+import zipfile
 
 from pathlib import Path
 from tqdm import tqdm
@@ -36,7 +37,7 @@ def backup_all():
 
         _backup(src_path, sub_dir)
 
-    print("bup complete.")
+    print("bup completed.")
 
 def _prepare_and_get_dst_path(dst_parent):
     folder_name = "bup_backups"
@@ -63,25 +64,21 @@ def _prepare_and_get_dst_path(dst_parent):
 def _backup(src_path, dst_path):
     folder_name = src_path.parts[-1]
     path_hash = _generate_base64_key_from_path(src_path)
-
-    dst_path_folder = dst_path / f"{folder_name}_{path_hash}"
+    filename = f"{path_hash}_{folder_name}.zip"
+    dst_zip_path  = dst_path / filename
 
     try:
-        dst_path_folder.mkdir(parents=True, exist_ok=True)
-        
-        total_files = sum([len(files) for r, d, files in os.walk(src_path)])
-        with tqdm(total=total_files, desc=f"Copying '{str(src_path)}'") as pbar:
-            shutil.copytree(src_path, dst_path_folder, dirs_exist_ok=True, 
-                            ignore=shutil.ignore_patterns('.git', '__pycache__'), 
-                            copy_function=lambda src, dst: _copy_and_update_progress(src, dst, pbar))
-
+        with zipfile.ZipFile(dst_zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            total_files = sum([len(files) for r, d, files in os.walk(src_path)])
+            with tqdm(total=total_files, desc=f"Zipping '{filename}'") as pbar:
+                for dirpath, dirnames, filenames in os.walk(src_path):
+                    for filename in filenames:
+                        file_path = Path(dirpath) / filename
+                        arcname = file_path.relative_to(src_path)
+                        zipf.write(file_path, arcname=arcname)
+                        pbar.update(1)
     except Exception as e:
         print(f"Error during backup: {e}")
-
-def _copy_and_update_progress(src, dst, pbar):
-    """Helper function to update progress bar during file copy."""
-    shutil.copy2(src, dst)
-    pbar.update(1)
 
 def _cleanup_path_string(path_str):
     symbols = ["\\", "/", ":", " ", "."]
