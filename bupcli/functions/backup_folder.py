@@ -23,23 +23,22 @@ def backup_all():
     dst_path = _prepare_and_get_dst_path(dst_parent)
 
     if len(dirs) == 1:
-        print(f"Starting bup for 1 directory:")
+        print(f"Starting BUP for 1 directory:")
     else:
-        print(f"Starting bup for {len(dirs)} directories:")
-
+        print(f"Starting BUP for {len(dirs)} directories:")
 
     for src in dirs:
         src_path = Path(src)
         _backup(src_path, dst_path)
 
-    print("bup completed.")
+    print("BUP completed.")
 
 def _prepare_and_get_dst_path(dst_parent):
-    folder_name = "bup_backups"
+    folder_name = "Backups"
     dst_path = Path(dst_parent) / folder_name
 
     if dst_path.exists():
-        old_folder_name = f"{folder_name}_old"
+        old_folder_name = f"{folder_name}_Old"
         old_dst_path = Path(dst_parent) / old_folder_name
     
         if old_dst_path.exists():
