@@ -30,12 +30,7 @@ def backup_all():
 
     for src in dirs:
         src_path = Path(src)
-
-        sub_folder = _cleanup_path_string(src_path.parts[0])
-        sub_dir = dst_path / sub_folder.capitalize()
-        sub_dir.mkdir(parents=True, exist_ok=True)
-
-        _backup(src_path, sub_dir)
+        _backup(src_path, dst_path)
 
     print("bup completed.")
 
