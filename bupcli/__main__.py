@@ -4,6 +4,7 @@ from .commands import add_path
 from .commands import list_paths
 from .commands import del_path
 from .commands import set_backup_dir
+from .commands import run_backup
 
 COMMAND_MAPPING = {
     'add': add_path.run,
@@ -14,6 +15,8 @@ COMMAND_MAPPING = {
     'l': list_paths.run,
     'set': set_backup_dir.run,
     's': set_backup_dir.run,
+    'run': run_backup.run,
+    'r': run_backup.run
 }
 
 def main():
