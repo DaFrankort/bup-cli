@@ -1,4 +1,4 @@
-from ..managers import paths_manager as paths
+from ..config import paths_manager as paths
 
 def run(args):
     dirs = paths.read()

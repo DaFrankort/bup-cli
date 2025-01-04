@@ -1,7 +1,7 @@
 import os
 import json
 from . import settings_manager as settings
-from .  import config_handler as config
+from .  import __config__ as config
 
 def _file_path():
     file_name = "dirs"

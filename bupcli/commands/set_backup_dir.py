@@ -1,5 +1,5 @@
 import os
-from ..managers import settings_manager as settings
+from ..config import settings_manager as settings
 
 def run(args):
     relative_path = '.'

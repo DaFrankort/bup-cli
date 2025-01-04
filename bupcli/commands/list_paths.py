@@ -1,5 +1,5 @@
-from ..managers import paths_manager as paths
-from ..managers import settings_manager as settings
+from ..config import paths_manager as paths
+from ..config import settings_manager as settings
 
 def run(args):
     print_backup_dir()
