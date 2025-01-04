@@ -28,7 +28,7 @@ def backup_all():
     else:
         print(f"Starting BUP for {num_dirs} directories using {num_workers} workers:")
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures = [executor.submit(_backup, Path(src), dst_path) for src in dirs]
         for future in concurrent.futures.as_completed(futures):
             try:
