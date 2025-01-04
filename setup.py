@@ -8,4 +8,7 @@ setup(
         'console_scripts': [
             'bup = bupcli.__main__:main'
         ]
-    })
+    },
+    install_requires=[
+        'tqdm>=4.64.0'
+    ])
