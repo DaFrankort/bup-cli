@@ -23,6 +23,8 @@ def add_path(relative_path):
         return
     
     paths.append(abs_path)
+    paths.sort()
+    
     with open(_file_path(), 'w') as file:
         json.dump(paths, file, indent=4)
     print(f"Added path: '{abs_path}'")
