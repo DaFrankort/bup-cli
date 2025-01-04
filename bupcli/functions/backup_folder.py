@@ -62,9 +62,9 @@ def _prepare_and_get_dst_path(dst_parent):
     return dst_path
 
 def _backup(src_path, dst_path):
-    folder_name = src_path.parts[-1]
-    path_hash = _generate_base64_key_from_path(src_path)
-    filename = f"{path_hash}_{folder_name}.zip"
+    zip_name =  str(src_path).replace("\\", "_").replace("/", "_").replace("__", "_")
+    zip_name = _cleanup_path_string(zip_name)
+    filename = f"{zip_name}.zip"
     dst_zip_path  = dst_path / filename
 
     try:
@@ -86,15 +86,3 @@ def _cleanup_path_string(path_str):
         path_str = path_str.replace(symbol, "")
     
     return path_str
-
-def _generate_base64_key_from_path(src_path, length=8):
-    """Generate a Base64-encoded unique key from the full path using a hash."""
-    try:
-        path_str = _cleanup_path_string(str(src_path))
-        hash_object = hashlib.md5(path_str.encode())
-        hash_bytes = hash_object.digest()
-        base64_encoded = base64.urlsafe_b64encode(hash_bytes).decode('utf-8')
-        return base64_encoded[:length]
-    except Exception as e:
-        print(f"Error generating Base64 key for path '{src_path}': {e}")
-        return "unknown"  # Return a default key if there's an error
