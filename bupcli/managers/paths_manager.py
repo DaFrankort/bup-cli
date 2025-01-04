@@ -1,12 +1,12 @@
 import os
 import json
 from . import settings_manager as settings
+from .  import config_handler as config
 
 def _file_path():
     file_name = "dirs"
-    folder_name = "data"
-    os.makedirs(folder_name, exist_ok=True) # TODO Create init logic to create folder initially rather than every time
-    return folder_name + "/" + file_name + ".json"
+    folder_path = config.get_config_path()
+    return str(folder_path / f"{file_name}.json")
 
 def add_path(relative_path):
     paths = read()

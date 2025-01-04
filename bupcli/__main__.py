@@ -33,6 +33,7 @@ def main():
 
 def print_command_mapping():
     global COMMAND_MAPPING
+    # TODO Create a command class to store the command synonyms, description and which function to run
     print("Available commands:")
     for command in COMMAND_MAPPING.keys():
         print(f"- {command}")
