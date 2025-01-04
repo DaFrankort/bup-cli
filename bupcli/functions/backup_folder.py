@@ -1,8 +1,7 @@
 import shutil
 import os
-import hashlib
-import base64
 import zipfile
+import concurrent.futures
 
 from pathlib import Path
 from tqdm import tqdm
@@ -20,18 +19,34 @@ def backup_all():
         print("No directories added yet, add directories using `bup add <folder_path>`")
         return
 
+    num_dirs = len(dirs)
     dst_path = _prepare_and_get_dst_path(dst_parent)
+    num_workers = _get_optimal_workers(num_dirs)
 
-    if len(dirs) == 1:
-        print(f"Starting BUP for 1 directory:")
+    if num_dirs == 1:
+        print(f"Starting BUP for 1 directory using {num_workers} workers:")
     else:
-        print(f"Starting BUP for {len(dirs)} directories:")
+        print(f"Starting BUP for {num_dirs} directories using {num_workers} workers:")
 
-    for src in dirs:
-        src_path = Path(src)
-        _backup(src_path, dst_path)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = [executor.submit(_backup, Path(src), dst_path) for src in dirs]
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                future.result()
+            except Exception as e:
+                print(f"Error during backup: {e}")
 
     print("BUP completed.")
+
+def _get_optimal_workers(num_dirs):
+    cpu_cores = os.cpu_count()
+
+    # If there are more directories than CPU cores, use the number of directories
+    # Otherwise, use a fraction of CPU cores or the number of cores
+    if num_dirs > cpu_cores:
+        return min(cpu_cores, num_dirs)
+    else:
+        return cpu_cores
 
 def _prepare_and_get_dst_path(dst_parent):
     folder_name = "Backups"
