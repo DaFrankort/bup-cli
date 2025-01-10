@@ -6,6 +6,7 @@ import hashlib
 
 from pathlib import Path
 from tqdm import tqdm
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from ..config import settings_manager as settings
 from ..config import paths_manager as paths
 from ..config import __config__ as config
@@ -21,36 +22,26 @@ def backup_all():
         print("No directories added yet, add directories using `bup add <folder_path>`")
         return
 
-    print("Checking directories...")
+    print(f"Checking {_get_directory_plural(len(dirs))} for changes...")
     valid_dirs = []
-    for path in dirs:
-        print(f"* '{path}'")
-        path = Path(path)
-        if not os.path.isdir(path):
-            print(f"   !!! Does not exist !!!")
-        elif not _folder_has_changes(path):
-            print(f"   - No changes since last backup.")
-        else:
-            print("   - Changes detected.")
-            valid_dirs.append(path)
+    with ThreadPoolExecutor(max_workers=_get_optimal_workers(len(dirs))) as executor:
+        future_to_path = {executor.submit(_check_and_update_valid_dir, path): path for path in dirs}
 
-    num_dirs = len(valid_dirs)
-    dst_path = _prepare_and_get_dst_path(dst_parent)
-    num_workers = _get_optimal_workers(num_dirs)
+        for future in as_completed(future_to_path):
+            result = future.result()
+            if result:
+                valid_dirs.append(result)
 
-    if num_dirs == 0:
-        print("No files to back-up.")
+    print()
+    if len(valid_dirs) == 0:
+        print("No files to backup.")
         return
     
-    print()
-    if num_dirs == 1:
-        print(f"Starting Backup for 1 directory using {num_workers} workers:")
-    else:
-        print(f"Starting Backup for {num_dirs} directories using {num_workers} workers:")
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+    dst_path = _prepare_and_get_dst_path(dst_parent)
+    print(f"Starting backup for {_get_directory_plural(len(valid_dirs))}")
+    with ThreadPoolExecutor(max_workers=_get_optimal_workers(len(valid_dirs))) as executor:
         futures = [executor.submit(_backup, Path(src), dst_path) for src in valid_dirs]
-        for future in concurrent.futures.as_completed(futures):
+        for future in as_completed(futures):
             try:
                 future.result()
             except Exception as e:
@@ -92,6 +83,16 @@ def _backup(src_path, dst_path):
                         pbar.update(1)
     except Exception as e:
         print(f"Error during backup: {e}")
+
+def _check_and_update_valid_dir(path):
+    path = Path(path)
+    if not os.path.isdir(path):
+        print(f"* '{path}' --- DOES NOT EXIST!")
+    elif not _folder_has_changes(path):
+        print(f"* '{path}'--- OK")
+    else:
+        print(f"* '{path}' --- MARKED FOR BACKUP")
+        return path
 
 def _folder_has_changes(path):
     """
@@ -169,3 +170,15 @@ def _cleanup_path_string(path_str):
         path_str = path_str.replace(symbol, "")
     
     return path_str
+
+def _get_directory_plural(count):
+    """
+    Used to print directory when the count is 1 and directories otherwise, to make gramatical sense.
+    
+    Also adds the count in front, since this will always be used to tell the user how many directories are being interacted with.
+
+    Returns:
+        string: {count} directory/directories
+    """
+    directory_string = 'directory' if count == 1 else 'directories'
+    return f"{count} {directory_string}"
